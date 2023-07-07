@@ -205,7 +205,8 @@ app.post("/logout", authenticateToken, function (req, res) {
     res.status(200).json({ message: "Đăng xuất thành công." });
 });
 
+const port = process.env.PORT || 3000; 
 
-app.listen(3000, function () {
-    console.log("Server đang lắng nghe cổng 3000...");
+app.listen(port, function () {
+    console.log(`Server is running on port ${port}`);
 });
