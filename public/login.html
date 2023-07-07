@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Chuyển tiền và rút tiền</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  <div id="loginScreen">
+    <h1>Đăng nhập</h1>
+
+    <div id="loginForm">
+      <div class="inputGroup">
+        <label for="usernameInput">Tên người dùng:</label>
+        <input type="text" id="usernameInput" placeholder="Nhập tên người dùng">
+      </div>
+      <div class="inputGroup">
+        <label for="passwordInput">Mật khẩu:</label>
+        <input type="password" id="passwordInput" placeholder="Nhập mật khẩu">
+      </div>
+      <button onclick="login()">Đăng nhập</button>
+    </div>
+  </div>
+
+  <div id="transferWithdrawScreen" style="display: none;">
+    <h2>Chuyển tiền và rút tiền</h2>
+    <!-- Nội dung chuyển tiền và rút tiền -->
+  </div>
+
+  <script src="frontend.js"></script>
+</body>
+
+</html>
