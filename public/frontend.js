@@ -22,7 +22,7 @@ function transferMoney() {
       switch (response.status) {
         case 200:
           // Chuyển tiền thành công
-          showBalances(); 
+          showBalances();
           showPopup("Chuyển tiền thành công!", true);
           break;
         case 400:
@@ -71,7 +71,7 @@ function withdrawMoney() {
       switch (response.status) {
         case 200:
           // Rút tiền thành công
-          showBalances(); 
+          showBalances();
           showPopup("Rút tiền thành công!", true);
           break;
         case 400:
@@ -127,13 +127,13 @@ function getTransactionHistory() {
       "Authorization": "Bearer " + localStorage.getItem("token"),
     },
   })
-  .then(function (response) {
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
-    return response.json();
-  })
-  .then(function (data) {
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+      return response.json();
+    })
+    .then(function (data) {
       // Xử lý phản hồi từ API
       displayTransactionHistory(data);
     })
@@ -326,9 +326,10 @@ function getUserInfo() {
 
 
 // Gọi hàm showBalances khi trang web được tải
-// window.addEventListener("DOMContentLoaded", showBalances);
-
 window.addEventListener("DOMContentLoaded", function () {
-  getUserInfo();
-  showBalances();
+  var token = localStorage.getItem("token");
+  if (token != null) {
+    getUserInfo();
+    showBalances();
+  }
 });
