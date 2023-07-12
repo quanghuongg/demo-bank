@@ -153,6 +153,7 @@ function displayTransactionHistory(transactions) {
   transactions.forEach(function (transaction) {
     var senderName = transaction.sender;
     var receiverName = transaction.receiver;
+    var amount = transaction.amount;
     var timestamp = transaction.timestamp;
     var transactionType = transaction.type;
 
@@ -165,6 +166,10 @@ function displayTransactionHistory(transactions) {
     var receiverCell = document.createElement("td");
     receiverCell.textContent = receiverName;
     row.appendChild(receiverCell);
+
+    var amountCell = document.createElement("td");
+    amountCell.textContent = amount;
+    row.appendChild(amountCell);
 
     var timestampCell = document.createElement("td");
     timestampCell.textContent = timestamp;
@@ -284,10 +289,46 @@ function logout() {
     });
 }
 
+function getUserInfo() {
+  fetch("/getUserInfo", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+  })
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+      return response.json();
+    })
+    .then(function (data) {
+      // Hiển thị thông tin người dùng
+      var userInfoContainer = document.getElementById("userInfoContainer");
+      userInfoContainer.innerHTML = ""; // Xóa nội dung cũ
+
+      var userIdElement = document.createElement("p");
+      userIdElement.textContent = "User ID: " + data.id;
+
+      var usernameElement = document.createElement("p");
+      usernameElement.textContent = "Username: " + data.username;
+
+      userInfoContainer.appendChild(userIdElement);
+      userInfoContainer.appendChild(usernameElement);
+    })
+    .catch(function (error) {
+      console.error("Lỗi khi gọi API getUserInfo:", error);
+    });
+}
 
 
 
 
 // Gọi hàm showBalances khi trang web được tải
-window.addEventListener("DOMContentLoaded", showBalances);
+// window.addEventListener("DOMContentLoaded", showBalances);
 
+window.addEventListener("DOMContentLoaded", function () {
+  getUserInfo();
+  showBalances();
+});

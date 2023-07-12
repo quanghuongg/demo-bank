@@ -14,6 +14,9 @@ var accounts = [
     { id: "3", username: "khanhngoc", balance: 10000000, password: "khanhngoc", transactionHistory: [] }
 ];
 
+const deactiveTokens = [];
+
+
 app.use(express.static(path.join(__dirname, "public")));
 
 
@@ -39,10 +42,10 @@ app.post("/transfer", authenticateToken, function (req, res) {
         return;
     }
 
-    if (senderAccount==receiverAccount){
+    if (senderAccount == receiverAccount) {
         res.status(400).json({ message: "Không thể chuyển tiền cho chính mình." });
         return;
-    } 
+    }
 
     if (amount < 10000) {
         res.status(400).json({ message: "Số tiền không đủ hạn mức 10000." });
@@ -71,8 +74,8 @@ app.post("/transfer", authenticateToken, function (req, res) {
     };
 
     var receiverTransaction = {
-        sender: sender,
-        receiver: receiver,
+        sender: senderAccount.username,
+        receiver: receiverAccount.username,
         amount: amount,
         timestamp: new Date(),
         type: "Nhận tiền"
@@ -178,11 +181,16 @@ function authenticateToken(req, res, next) {
         return res.sendStatus(401);
     }
 
+    // Kiểm tra xem token đã bị deactive hay chưa
+    if (deactiveTokens.includes(token)) {
+        return res.status(401).json({ message: "Token has been deactivated" });
+    }
+
     // Xác thực token và lấy thông tin người dùng từ token
     jwt.verify(token, 'secret-key', (err, user) => {
         if (err) {
             // Token không hợp lệ
-            return res.sendStatus(403);
+            return res.status(403).json({ message: "Token không hợp lệ" });
         }
 
         // Lưu thông tin người dùng vào biến req.user
@@ -200,12 +208,21 @@ app.post("/logout", authenticateToken, function (req, res) {
 
     // Ghi log người dùng đã đăng xuất
     console.log("Người dùng đã đăng xuất:", user.username);
-
+    deactiveTokens.push(req.token);
     // Trả về phản hồi thành công
     res.status(200).json({ message: "Đăng xuất thành công." });
 });
+// API info
+app.get("/getUserInfo", authenticateToken, function (req, res) {
+    var user = req.user;
 
-const port = process.env.PORT || 3000; 
+    // Trả về thông tin người dùng
+    res.status(200).json({ id: user.id, username: user.username });
+});
+
+
+
+const port = process.env.PORT || 3000;
 
 app.listen(port, function () {
     console.log(`Server is running on port ${port}`);
